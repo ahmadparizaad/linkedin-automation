@@ -1,0 +1,47 @@
+# Vercel ignore file
+
+# Environment files (these should be set in Vercel dashboard)
+.env
+.env.local
+.env.production
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Development files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Deployment scripts (not needed on Vercel)
+deploy.bat
+deploy.sh
+
+# Documentation (optional, can include if you want)
+DEPLOYMENT.md

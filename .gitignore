@@ -97,3 +97,4 @@ ehthumbs.db
 # Temporary files
 temp/
 tmp/
+.vercel

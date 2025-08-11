@@ -256,18 +256,31 @@ app.get('/api/test-connections', async (req, res) => {
 
 // Schedule the automation to run daily at 7 AM
 const scheduleExpression = process.env.SCHEDULE_CRON || '0 7 * * *';
-cron.schedule(scheduleExpression, async () => {
-  try {
-    logger.info('Scheduled automation started');
-    await linkedinAutomation.processWorkflow();
-    logger.info('Scheduled automation completed successfully');
-  } catch (error) {
-    logger.error('Scheduled automation failed:', error);
-  }
-}, {
-  scheduled: true,
-  timezone: "America/New_York" // Adjust timezone as needed
-});
+
+// Note: Vercel serverless functions don't support traditional cron jobs
+// For Vercel deployment, consider using:
+// 1. Vercel Cron (paid feature): https://vercel.com/docs/cron-jobs
+// 2. GitHub Actions with scheduled workflows
+// 3. External cron services that call your API endpoint
+
+if (process.env.NODE_ENV !== 'production' || process.env.ENABLE_CRON === 'true') {
+  cron.schedule(scheduleExpression, async () => {
+    try {
+      logger.info('Scheduled automation started');
+      await linkedinAutomation.processWorkflow();
+      logger.info('Scheduled automation completed successfully');
+    } catch (error) {
+      logger.error('Scheduled automation failed:', error);
+    }
+  }, {
+    scheduled: true,
+    timezone: "America/New_York" // Adjust timezone as needed
+  });
+  
+  logger.info(`Cron job scheduled: ${scheduleExpression}`);
+} else {
+  logger.info('Cron job disabled in production. Use external triggers or Vercel Cron.');
+}
 
 // Error handling middleware
 app.use((error, req, res, next) => {
@@ -299,8 +312,11 @@ process.on('SIGTERM', () => {
 
 app.listen(PORT, () => {
   logger.info(`LinkedIn Automation Server running on port ${PORT}`);
-  logger.info(`Scheduled to run daily at: ${scheduleExpression}`);
-  logger.info(`Environment: ${process.env.NODE_ENV}`);
+  if (process.env.NODE_ENV !== 'production' || process.env.ENABLE_CRON === 'true') {
+    logger.info(`Scheduled to run daily at: ${scheduleExpression}`);
+  }
+  logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
+// Export for Vercel
 module.exports = app;
