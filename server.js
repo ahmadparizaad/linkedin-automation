@@ -255,7 +255,7 @@ app.get('/api/test-connections', async (req, res) => {
 });
 
 // Schedule the automation to run daily at 7 AM
-const scheduleExpression = process.env.SCHEDULE_CRON || '50 11 * * *';
+const scheduleExpression = process.env.SCHEDULE_CRON || '0 7 * * *';
 
 // Note: Vercel serverless functions don't support traditional cron jobs
 // For Vercel deployment, consider using:
