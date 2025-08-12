@@ -255,7 +255,7 @@ app.get('/api/test-connections', async (req, res) => {
 });
 
 // Schedule the automation to run daily at 7 AM
-const scheduleExpression = process.env.SCHEDULE_CRON || '0 7 * * *';
+const scheduleExpression = process.env.SCHEDULE_CRON || '50 11 * * *';
 
 // Note: Vercel serverless functions don't support traditional cron jobs
 // For Vercel deployment, consider using:
@@ -263,24 +263,19 @@ const scheduleExpression = process.env.SCHEDULE_CRON || '0 7 * * *';
 // 2. GitHub Actions with scheduled workflows
 // 3. External cron services that call your API endpoint
 
-if (process.env.NODE_ENV !== 'production' || process.env.ENABLE_CRON === 'true') {
-  cron.schedule(scheduleExpression, async () => {
-    try {
-      logger.info('Scheduled automation started');
-      await linkedinAutomation.processWorkflow();
-      logger.info('Scheduled automation completed successfully');
-    } catch (error) {
-      logger.error('Scheduled automation failed:', error);
-    }
-  }, {
-    scheduled: true,
-    timezone: "America/New_York" // Adjust timezone as needed
-  });
-  
-  logger.info(`Cron job scheduled: ${scheduleExpression}`);
-} else {
-  logger.info('Cron job disabled in production. Use external triggers or Vercel Cron.');
-}
+cron.schedule(scheduleExpression, async () => {
+  try {
+    logger.info('Scheduled automation started');
+    await linkedinAutomation.processWorkflow();
+    logger.info('Scheduled automation completed successfully');
+  } catch (error) {
+    logger.error('Scheduled automation failed:', error);
+  }
+}, {
+  scheduled: true,
+  timezone: "Asia/Kolkata" // Mumbai/India time
+});
+logger.info(`Cron job scheduled: ${scheduleExpression} (Asia/Kolkata)`);
 
 // Error handling middleware
 app.use((error, req, res, next) => {
