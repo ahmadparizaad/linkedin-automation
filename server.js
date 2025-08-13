@@ -2,8 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const cron = require('node-cron');
-const tz = require('tz');
+// Scheduling is handled by GitHub Actions in production
 require('dotenv').config();
 
 const linkedinAutomation = require('./src/services/linkedinAutomation');
@@ -255,39 +254,7 @@ app.get('/api/test-connections', async (req, res) => {
   }
 });
 
-// Schedule the automation to run daily at 7 AM
-const morningCron = '0 7 * * *';
-const eveningCron = '0 19 * * *';
-
-// Note: Vercel serverless functions don't support traditional cron jobs
-// For Vercel deployment, consider using:
-// 1. Vercel Cron (paid feature): https://vercel.com/docs/cron-jobs
-// 2. GitHub Actions with scheduled workflows
-// 3. External cron services that call your API endpoint
-
-cron.schedule(morningCron, tz('Asia/Kolkata', async () => {
-  try {
-    logger.info('Scheduled automation started (7:00 AM Asia/Kolkata)');
-    await linkedinAutomation.processWorkflow();
-    logger.info('Scheduled automation completed successfully (7:00 AM Asia/Kolkata)');
-  } catch (error) {
-    logger.error('Scheduled automation failed (7:00 AM Asia/Kolkata):', error);
-  }
-}), {
-  scheduled: true
-});
-cron.schedule(eveningCron, tz('Asia/Kolkata', async () => {
-  try {
-    logger.info('Scheduled automation started (7:00 PM Asia/Kolkata)');
-    await linkedinAutomation.processWorkflow();
-    logger.info('Scheduled automation completed successfully (7:00 PM Asia/Kolkata)');
-  } catch (error) {
-    logger.error('Scheduled automation failed (7:00 PM Asia/Kolkata):', error);
-  }
-}), {
-  scheduled: true
-});
-logger.info('Cron jobs scheduled: 7:00 AM and 7:00 PM Asia/Kolkata via tz');
+// Scheduling is now handled by GitHub Actions or external services. No cron jobs run in production.
 
 // Error handling middleware
 app.use((error, req, res, next) => {
