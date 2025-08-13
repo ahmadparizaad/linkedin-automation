@@ -12,18 +12,25 @@
     "vercel-build": "echo 'Building for Vercel...'",
     "postinstall": "echo 'Installation complete'"
   },
-  "keywords": ["linkedin", "automation", "ai", "content", "social-media"],
+  "keywords": [
+    "linkedin",
+    "automation",
+    "ai",
+    "content",
+    "social-media"
+  ],
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "node-cron": "^3.0.3",
-    "googleapis": "^126.0.1",
     "axios": "^1.6.2",
-    "dotenv": "^16.3.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "googleapis": "^126.0.1",
     "helmet": "^7.1.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
+    "tz": "^0.1.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

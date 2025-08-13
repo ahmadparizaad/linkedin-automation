@@ -1,0 +1,15 @@
+name: LinkedIn Automation Scheduler
+
+on:
+  schedule:
+    # 7:00 AM and 7:00 PM Mumbai time (Asia/Kolkata is UTC+5:30)
+    - cron: '30 1 * * *'   # 7:00 AM IST
+    - cron: '30 13 * * *'  # 7:00 PM IST
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger LinkedIn Automation
+        run: |
+          curl -X POST https://linkedin-automation-kappa.vercel.app/api/trigger-automation

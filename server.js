@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const cron = require('node-cron');
+const tz = require('tz');
 require('dotenv').config();
 
 const linkedinAutomation = require('./src/services/linkedinAutomation');
@@ -255,7 +256,8 @@ app.get('/api/test-connections', async (req, res) => {
 });
 
 // Schedule the automation to run daily at 7 AM
-const scheduleExpression = process.env.SCHEDULE_CRON || '0 7 * * *';
+const morningCron = '0 7 * * *';
+const eveningCron = '0 19 * * *';
 
 // Note: Vercel serverless functions don't support traditional cron jobs
 // For Vercel deployment, consider using:
@@ -263,19 +265,29 @@ const scheduleExpression = process.env.SCHEDULE_CRON || '0 7 * * *';
 // 2. GitHub Actions with scheduled workflows
 // 3. External cron services that call your API endpoint
 
-cron.schedule(scheduleExpression, async () => {
+cron.schedule(morningCron, tz('Asia/Kolkata', async () => {
   try {
-    logger.info('Scheduled automation started');
+    logger.info('Scheduled automation started (7:00 AM Asia/Kolkata)');
     await linkedinAutomation.processWorkflow();
-    logger.info('Scheduled automation completed successfully');
+    logger.info('Scheduled automation completed successfully (7:00 AM Asia/Kolkata)');
   } catch (error) {
-    logger.error('Scheduled automation failed:', error);
+    logger.error('Scheduled automation failed (7:00 AM Asia/Kolkata):', error);
   }
-}, {
-  scheduled: true,
-  timezone: "Asia/Kolkata" // Mumbai/India time
+}), {
+  scheduled: true
 });
-logger.info(`Cron job scheduled: ${scheduleExpression} (Asia/Kolkata)`);
+cron.schedule(eveningCron, tz('Asia/Kolkata', async () => {
+  try {
+    logger.info('Scheduled automation started (7:00 PM Asia/Kolkata)');
+    await linkedinAutomation.processWorkflow();
+    logger.info('Scheduled automation completed successfully (7:00 PM Asia/Kolkata)');
+  } catch (error) {
+    logger.error('Scheduled automation failed (7:00 PM Asia/Kolkata):', error);
+  }
+}), {
+  scheduled: true
+});
+logger.info('Cron jobs scheduled: 7:00 AM and 7:00 PM Asia/Kolkata via tz');
 
 // Error handling middleware
 app.use((error, req, res, next) => {
