@@ -5,7 +5,7 @@ class OpenRouterService {
   constructor() {
     this.apiKey = process.env.OPENROUTER_API_KEY;
     this.baseUrl = 'https://openrouter.ai/api/v1';
-    this.model = 'openai/gpt-4o-mini'; // Using a more reliable model
+    this.model = 'openai/gpt-oss-20b:free'; // Using a more reliable model
     
     if (!this.apiKey) {
       throw new Error('OPENROUTER_API_KEY is required');
